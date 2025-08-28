@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+:root { color-scheme: dark; }
+html, body {
+  height: 100%;
+}
+body {
+  @apply bg-ink-950 text-white antialiased;
+  background-image: linear-gradient(to bottom right, rgba(31,41,55,0.8), rgba(3,7,18,0.9)), theme(backgroundImage.mesh);
+  background-attachment: fixed;
+}
+
+.card {
+  @apply rounded-xl border border-white/10 bg-ink-900/60 backdrop-blur-md shadow-glow;
+}
+.btn {
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+.btn-primary {
+  @apply btn bg-gradient-to-r from-indigo-500 to-fuchsia-500 hover:from-indigo-400 hover:to-fuchsia-400 text-white;
+}
+.btn-ghost {
+  @apply btn bg-white/5 hover:bg-white/10 text-white;
+}
+.input, .select, .textarea {
+  @apply w-full rounded-lg bg-white/5 border border-white/10 p-2 outline-none focus:ring-2 focus:ring-indigo-500/60 placeholder:text-white/40;
+}
+.label { @apply text-white/80 text-sm; }
+
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs bg-white/10 border border-white/10;
+}
+
+.nav-gradient {
+  background: linear-gradient(180deg, rgba(15,23,42,0.65), rgba(15,23,42,0.25) 60%, transparent);
+}

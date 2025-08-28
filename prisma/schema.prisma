@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TagCode {
+  FAMILY
+  CLOSE_FRIEND
+  FRIEND
+  LOVE_INTEREST
+  RELATIONSHIP
+  ACQUAINTANCE
+  ENCOUNTER
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String?      @unique
+  people       Person[]
+  diaryEntries DiaryEntry[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  code      TagCode     @unique
+  label     String
+  color     String
+  people    PersonTag[]
+}
+
+model Person {
+  id            String             @id @default(cuid())
+  userId        String?
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  name          String
+  age           Int?
+  is_online     Boolean            @default(false)
+  notes         String?
+  location_name String?
+  lat           Decimal?           @db.Decimal(9, 6)
+  lng           Decimal?           @db.Decimal(9, 6)
+  met_at        DateTime?
+  ended_at      DateTime?
+  platform      String?
+  context_url   String?
+
+  diaryLinks    DiaryEntryPerson[]
+  tagLinks      PersonTag[]
+
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([met_at])
+  @@index([lat, lng])
+}
+
+model DiaryEntry {
+  id            String             @id @default(cuid())
+  userId        String?
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  headline      String?
+  content       String
+  start_at      DateTime?
+  end_at        DateTime?
+  location_name String?
+  lat           Decimal?           @db.Decimal(9, 6)
+  lng           Decimal?           @db.Decimal(9, 6)
+
+  attachments   DiaryAttachment[]
+  people        DiaryEntryPerson[]
+
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([createdAt])
+  @@index([start_at])
+}
+
+model DiaryAttachment {
+  id        String      @id @default(cuid())
+  entryId   String
+  entry     DiaryEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  data      Bytes
+  mimeType  String
+  createdAt DateTime    @default(now())
+
+  @@index([entryId, createdAt])
+}
+
+model PersonTag {
+  personId  String
+  tagId     String
+  person    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  tag       Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([personId, tagId])
+  @@index([tagId])
+}
+
+model DiaryEntryPerson {
+  diaryEntryId String
+  personId     String
+  entry        DiaryEntry @relation(fields: [diaryEntryId], references: [id], onDelete: Cascade)
+  person       Person     @relation(fields: [personId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@id([diaryEntryId, personId])
+  @@index([personId])
+}
