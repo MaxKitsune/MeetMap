@@ -1,5 +1,3 @@
-Collecting workspace informationHere's a description for the GitHub repository:
-
 # MeetMap
 
 A Next.js application for tracking relationships, places, and memories on an interactive map. Built with TypeScript, Prisma, PostgreSQL, and MapLibre GL.
@@ -24,7 +22,7 @@ A Next.js application for tracking relationships, places, and memories on an int
 
 ```bash
 # Clone repository and install dependencies
-git clone <repo-url>
+git clone https://github.com/MaxKitsune/MeetMap
 npm install
 
 # Copy example env and configure
@@ -58,3 +56,8 @@ npm run dev
 ## License
 
 MIT
+
+## Additional information
+
+This is a pre-release. The Design or features are subject to change.
+The project was coded mostly with an LLM and is almost entirely AI generated.
