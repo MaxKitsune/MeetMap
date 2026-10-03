@@ -241,7 +241,7 @@ export function PhotoImport({
         if (!busy) onClose();
       }}
       title="Bilder, die deine Reise erzählen."
-      description="Aufnahmedatum und GPS werden privat gespeichert. Die ausgelieferten Bilder selbst enthalten weiterhin keine EXIF-Daten."
+      description="Aufnahmedatum und GPS helfen beim Zuordnen. Die importierten Bilddateien enthalten keine EXIF-Daten."
     >
       <form
         ref={importForm}
@@ -363,7 +363,7 @@ export function PhotoImport({
                 <CloudDownload size={30} />
                 <h3>Deine Fotobibliothek kann mitreisen.</h3>
                 <p>
-                  Verbinde deinen eigenen Immich-Server, um ausgewählte Bilder
+                  Verbinde Immich, um ausgewählte Bilder
                   mit Aufnahmeort, Datum und erkannten Namen zu übernehmen.
                 </p>
                 <details>

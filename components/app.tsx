@@ -400,7 +400,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
             meetmap<span className="logo-dot">.</span>
           </span>
         </a>
-        <div className="sidebar-section-label">DEIN PERSÖNLICHER RAUM</div>
+        <div className="sidebar-section-label">ENTDECKEN</div>
         <nav aria-label="Hauptnavigation">
           {navItems.map(([id, label, Icon]) => (
             <button
@@ -445,15 +445,6 @@ function Workspace({ initialData }: { initialData: AppData }) {
           </button>
         ))}
         <div className="sidebar-bottom">
-          <div className="private-space">
-            <span>
-              <ShieldCheck size={19} />
-            </span>
-            <div>
-              <strong>Dein Leben bleibt privat.</strong>
-              <p>Nur du hast Zugang.</p>
-            </div>
-          </div>
           <button
             className={"nav-item " + (view === "settings" ? "active" : "")}
             onClick={() => navigate("settings")}
@@ -468,7 +459,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
             />
             <div>
               <strong>{data.owner.name}</strong>
-              <span>Dein privater Bereich</span>
+              <span>Account</span>
             </div>
             <button
               className="icon-button"
@@ -499,7 +490,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
               <Menu size={22} />
             </button>
             <span className="breadcrumb">
-              Mein MeetMap<span>/</span>
+              MeetMap<span>/</span>
               <strong>
                 {navItems.find((n) => n[0] === view)?.[1] ||
                   (view === "favorites" ? "Favoriten" : "Einstellungen")}
@@ -507,10 +498,6 @@ function Workspace({ initialData }: { initialData: AppData }) {
             </span>
           </div>
           <div className="topbar-actions">
-            <span className="private-indicator">
-              <LockKeyhole size={13} />
-              Privat
-            </span>
             <button
               className="search-trigger"
               aria-label="Alles durchsuchen"
@@ -546,7 +533,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
                     : {
                         people: "MENSCHEN & VERBINDUNGEN",
                         memories: "DEINE ERINNERUNGEN",
-                        map: "DEINE PERSÖNLICHE WELTKARTE",
+                        map: "DEINE WELTKARTE",
                         timeline: "DEIN ZEITSTRAHL",
                         travel: "REISEN & FERIEN",
                         favorites: "DEINE FAVORITEN",
@@ -1219,13 +1206,6 @@ function Workspace({ initialData }: { initialData: AppData }) {
               busy={busy}
             />
           )}
-          <footer className="workspace-footer">
-            <span>
-              <ShieldCheck size={13} />
-              Deine Geschichten gehören dir.
-            </span>
-            <span>Mit Sorgfalt gesammelt. Auf deinem Server zuhause.</span>
-          </footer>
         </main>
       </div>
       {search && (
@@ -1632,7 +1612,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
                 onClick={() =>
                   setConfirm({
                     title: "Diese Erinnerung löschen?",
-                    text: "Die Erinnerung und ihre Bilder werden dauerhaft von deinem Server entfernt.",
+                    text: "Die Erinnerung und ihre Bilder werden dauerhaft gelöscht.",
                     action: async () => {
                       await api("memories/" + memory.id, "DELETE");
                       setSelectedMemory(null);
@@ -1692,7 +1672,7 @@ function Workspace({ initialData }: { initialData: AppData }) {
           open
           onClose={() => setRemindersOpen(false)}
           title="Zeit für ein kleines Hallo"
-          description="Deine persönlichen Kontaktintervalle helfen dir, in Verbindung zu bleiben."
+          description="Kontaktintervalle helfen dir, in Verbindung zu bleiben."
         >
           <div className="reminders-modal">
             {reminders.length ? (
@@ -1798,9 +1778,13 @@ function SystemSummary({ onOpen }: { onOpen: () => void }) {
         <Server size={19} />
       </span>
       <div>
-        <strong>Auf deinem Server zuhause</strong>
+        <strong>Systemstatus</strong>
         <span>
-          {data ? "Alle Daten privat gespeichert" : "Systemstatus laden …"}
+          {data
+            ? data.database
+              ? "Datenbank verbunden"
+              : "Datenbank nicht erreichbar"
+            : "Systemstatus laden …"}
         </span>
       </div>
       <span className={"system-light " + (data?.database ? "online" : "")} />
@@ -1862,7 +1846,7 @@ function SettingsView({
         <div className="section-heading">
           <h2>
             <ShieldCheck size={21} />
-            Privatsphäre & persönliche Daten
+            Profil & Karte
           </h2>
         </div>
         <label>
@@ -1871,9 +1855,6 @@ function SettingsView({
             value={birthday}
             onChange={(e) => setBirthday(e.target.value)}
           />
-          <span className="field-hint">
-            Wird auf deinem Server gespeichert.
-          </span>
         </label>
         <label>
           Orte auf der Karte vergröbern
@@ -1895,9 +1876,9 @@ function SettingsView({
           <div>
             <strong>Online-Kartendetails & Ortssuche</strong>
             <p>
-              Dein Server fragt OpenStreetMap und Nominatim an. Dabei werden die
-              Server-IP, Suchbegriffe und Kartenausschnitte an diese Dienste
-              übermittelt. Ausgeschaltet bleibt die Karte vollständig lokal.
+              Für Kartendetails und Ortssuche werden die Server-IP, Suchbegriffe
+              und Kartenausschnitte an OpenStreetMap und Nominatim übermittelt.
+              Bei ausgeschalteter Option werden diese Dienste nicht angefragt.
             </p>
           </div>
           <button
@@ -1998,15 +1979,14 @@ function SettingsView({
         <div className="section-heading">
           <h2>
             <Sparkles size={21} />
-            Lokale KI
+            KI-Zusammenfassungen
           </h2>
           <span className="pill">
             {status?.ai ? "Ollama erreichbar" : "Nicht verbunden"}
           </span>
         </div>
         <p className="settings-copy">
-          Deine Gedanken bleiben bei dir. MeetMap kann für Zusammenfassungen mit
-          Ollama auf deinem eigenen Server arbeiten.
+          MeetMap kann Erinnerungen mit Ollama zusammenfassen.
         </p>
         <p className="settings-copy">
           {status?.ai
@@ -2025,7 +2005,7 @@ function SettingsView({
         <div className="section-heading">
           <h2>
             <Heart size={21} />
-            Dein privater Bereich
+            Account
           </h2>
         </div>
         <div className="account-details">
@@ -2036,12 +2016,10 @@ function SettingsView({
           <div>
             <h3>{data.owner.name}</h3>
             <p>{data.owner.email}</p>
-            <span className="pill">Owner · alleiniger Zugang</span>
           </div>
         </div>
         <p className="settings-copy">
-          Keine öffentliche Registrierung. Keine Tracking-Dienste. Schriften und
-          Bilder werden von deinem Server geladen.
+          MeetMap läuft auf deinem Server. Nur du hast Zugriff auf deine Daten.
         </p>
         {!data.people.length && !data.memories.length && (
           <button className="button" disabled={busy} onClick={demo}>

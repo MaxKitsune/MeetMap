@@ -303,7 +303,7 @@ export default function Timeline({
         <div className="section-heading tl-section-heading">
           <div>
             <h2>Menschen, die dich begleiten</h2>
-            <p>Jede Verbindung hat ihre eigene Geschichte.</p>
+            <p>Entdecke, wie eure Geschichte gewachsen ist.</p>
           </div>
           <span className="pill">{people.length} Verbindungen</span>
         </div>

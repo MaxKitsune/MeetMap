@@ -1,7 +1,7 @@
 "use client";
 import { DateInput } from "./date-input";
 import { useState } from "react";
-import { Check, LoaderCircle, MapPin, Route } from "lucide-react";
+import { Check, LoaderCircle, Route } from "lucide-react";
 import type { AppData, HolidayPeriod, Trip, TravelLeg } from "@/lib/types";
 import { api, dateInput, today } from "@/lib/utils";
 import { Modal, Avatar } from "./ui";
@@ -36,9 +36,6 @@ const colors = [
 function Footer({ busy, label }: { busy: boolean; label: string }) {
   return (
     <div className="editor-footer">
-      <span>
-        <MapPin size={15} /> Deine Reisen bleiben privat
-      </span>
       <button className="button primary" disabled={busy} type="submit">
         {busy ? (
           <LoaderCircle size={16} className="spin" />
@@ -228,7 +225,7 @@ export function TripEditor({
       wide
       onClose={onClose}
       title={trip ? "Urlaub bearbeiten" : "Wohin zieht es dich?"}
-      description="Ein Wochenende, ein Roadtrip, eine große Reise. Jeder Urlaub bekommt seine eigene Geschichte."
+      description="Ein Wochenende, ein Roadtrip, eine große Reise. Halte Ziele, Zeitraum und Mitreisende fest."
     >
       <form className="editor-form" onSubmit={submit}>
         <label>

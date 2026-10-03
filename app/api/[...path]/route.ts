@@ -628,7 +628,7 @@ async function handler(
       } catch {
         throw new ApiError(
           503,
-          "Die lokale KI ist nicht verfügbar. Deine Erinnerung bleibt gespeichert.",
+          "Die KI ist nicht verfügbar. Deine Erinnerung bleibt gespeichert.",
         );
       }
     }

@@ -11,10 +11,10 @@ import {
   ChevronRight,
   Footprints,
   LocateFixed,
+  Map as MapIcon,
   MapPin,
   Plane,
   Route,
-  ShieldCheck,
   Ship,
   TrainFront,
   WifiOff,
@@ -632,11 +632,9 @@ export default function TravelMap({
           </div>
         )}
         <div className="tm-privacy">
-          <ShieldCheck size={13} />
+          <MapIcon size={13} />
           <span>
-            {online
-              ? "Kartendetails über deinen Server"
-              : "Lokale Karte · bleibt privat"}
+            {online ? "Kartendetails aktiviert" : "Weltkarte"}
             {privacyRadius > 0 ? " · Positionen gerundet" : ""}
           </span>
         </div>

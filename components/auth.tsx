@@ -4,7 +4,6 @@ import {
   ArrowRight,
   LockKeyhole,
   MapPin,
-  ShieldCheck,
   LoaderCircle,
   Eye,
   EyeOff,
@@ -68,19 +67,15 @@ export default function Auth({ setup = false }: { setup?: boolean }) {
             <span className="orbit-label label-two">Erinnerungen</span>
             <span className="orbit-label label-three">Orte</span>
           </div>
-          <div className="privacy-inline">
-            <ShieldCheck size={17} />
-            <span>Privat. Auf deinem Server. Nur für dich.</span>
-          </div>
         </section>
         <section className="auth-card">
           <span className="small-icon">
             <LockKeyhole size={23} />
           </span>
-          <h2>{setup ? "Dein persönlicher Anfang." : "Willkommen zurück."}</h2>
+          <h2>{setup ? "Dein Anfang mit MeetMap." : "Willkommen zurück."}</h2>
           <p>
             {setup
-              ? "Richte deinen privaten Zugang zu MeetMap ein."
+              ? "Erstelle deinen Account und halte die ersten Momente fest."
               : "Deine Erinnerungen warten auf dich."}
           </p>
           <form onSubmit={submit}>
@@ -141,24 +136,16 @@ export default function Auth({ setup = false }: { setup?: boolean }) {
                 <LoaderCircle className="spin" size={18} />
               ) : (
                 <>
-                  {setup ? "Meinen privaten Raum erstellen" : "Anmelden"}
+                  {setup ? "Account erstellen" : "Anmelden"}
                   <ArrowRight size={18} />
                 </>
               )}
             </button>
           </form>
-          <div className="auth-note">
-            <ShieldCheck size={16} />
-            <p>
-              {setup
-                ? "Ein Account. Dein eigener Server. Keine öffentliche Registrierung."
-                : "Dein Zugang ist mit einer sicheren Sitzung geschützt."}
-            </p>
-          </div>
         </section>
       </div>
       <footer>
-        Ein Zuhause für das, was zählt.<span>MEETMAP · SELF-HOSTED</span>
+        Ein Zuhause für das, was zählt.<span>MEETMAP</span>
       </footer>
     </main>
   );

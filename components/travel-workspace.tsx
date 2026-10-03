@@ -860,8 +860,7 @@ export default function TravelWorkspace({
               <div className="travel-empty small">
                 <Compass size={26} />
                 <p>
-                  Nach deiner ersten Reise beginnt hier dein persönlicher
-                  Rückblick.
+                  Nach deiner ersten Reise beginnt hier der Rückblick.
                 </p>
               </div>
             )}
@@ -1095,8 +1094,7 @@ export default function TravelWorkspace({
                   <BookOpen size={33} />
                   <h3>Was möchtest du von dieser Reise behalten?</h3>
                   <p>
-                    Jeder Eintrag kann seinen eigenen Ort und seine eigenen
-                    Fotos haben.
+                    Ergänze Orte und Fotos zu deinen Einträgen.
                   </p>
                   <button className="button" onClick={newEntry}>
                     Ersten Tagebucheintrag schreiben
@@ -1122,7 +1120,7 @@ export default function TravelWorkspace({
               <div className="travel-section-toolbar">
                 <div>
                   <h2>Deine Reise in Bildern</h2>
-                  <p>{photos.length} private Bilder</p>
+                  <p>{photos.length} Bilder</p>
                 </div>
                 <button
                   className="button primary"
@@ -1440,7 +1438,7 @@ export function TravelSettings({
       open
       onClose={onClose}
       title="Von zuhause in die Welt."
-      description="Die Reiseerkennung läuft auf deinem Server und macht ausschließlich Vorschläge."
+      description="Die Reiseerkennung schlägt passende Reisen vor. Du entscheidest, welche du übernimmst."
     >
       <form
         className="editor-form"

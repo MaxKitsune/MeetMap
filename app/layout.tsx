@@ -7,7 +7,7 @@ import "@fontsource/lora/400.css";
 import "./globals.css";
 export const metadata: Metadata = {
   title: "MeetMap · Dein Leben, verbunden.",
-  description: "Dein privater Ort für Menschen, Begegnungen und Erinnerungen.",
+  description: "Ein Ort für Menschen, Begegnungen und Erinnerungen.",
   icons: { icon: "/favicon.svg" },
 };
 export default function RootLayout({

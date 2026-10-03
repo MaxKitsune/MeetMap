@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import type { GeoJSONSource, Map as LibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { LocateFixed, MapPin, ShieldCheck, WifiOff } from "lucide-react";
+import { LocateFixed, MapPin, Map as MapIcon, WifiOff } from "lucide-react";
 import type { Memory, Person, Place } from "@/lib/types";
 maplibregl.setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 type Item = {
@@ -340,10 +340,8 @@ export default function MapExplorer({
         <LocateFixed size={18} />
       </button>
       <div className="map-privacy">
-        <ShieldCheck size={13} />
-        {online
-          ? "Kartendetails über deinen Server"
-          : "Lokale Karte · keine externen Anfragen"}
+        <MapIcon size={13} />
+        {online ? "Kartendetails aktiviert" : "Weltkarte"}
       </div>
       {clusterItems.length > 0 && (
         <div className="map-cluster-list">

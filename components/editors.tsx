@@ -10,7 +10,6 @@ import {
   MapPin,
   Plus,
   Search,
-  ShieldCheck,
   X,
   CloudCheck,
   ChevronDown,
@@ -124,7 +123,7 @@ export function PlacePicker({
                 </button>
               ))}
               <p className="field-hint">
-                Ortssuche über deinen Server · © OpenStreetMap
+                Ortssuche · © OpenStreetMap
               </p>
             </>
           )}
@@ -407,7 +406,7 @@ export function PersonEditor({
           />
         </div>
         <label>
-          Persönliche Notizen
+          Notizen
           <textarea
             {...register("notes")}
             placeholder="Was macht diesen Menschen besonders? Worüber habt ihr zuletzt gesprochen?"
@@ -479,10 +478,6 @@ export function PersonEditor({
           </p>
         )}
         <div className="editor-footer">
-          <span>
-            <ShieldCheck size={15} />
-            Nur für dich sichtbar
-          </span>
           <button
             type="submit"
             className="button primary"
@@ -889,7 +884,7 @@ export function MemoryEditor({
               />
             </label>
             <label>
-              Privatheit
+              Kennzeichnung
               <select
                 value={value.privacy}
                 onChange={(e) => update("privacy", e.target.value)}
@@ -924,7 +919,7 @@ export function MemoryEditor({
         <div className="editor-footer">
           <span aria-live="polite">
             <CloudCheck size={15} />
-            {status || "Privat und auf deinem Server"}
+            {status || "Änderungen werden automatisch gespeichert"}
           </span>
           <div className="button-row">
             <button
