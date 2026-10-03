@@ -1,0 +1,38 @@
+[
+  {
+    "file": "/tmp/meetmap-assets/lake-como.jpg",
+    "photographer": "Mariya Georgieva",
+    "source": "https://unsplash.com/photos/yellow-boat-docked-near-building-wwV3ZMLaAmg",
+    "download": "https://images.unsplash.com/photo-1447722939828-559fee94b1f5?fm=jpg&fit=crop&w=1200&h=800&q=85",
+    "width": 1200,
+    "height": 800,
+    "format": "JPEG",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "licenseSummary": "Free for commercial and noncommercial use; attribution appreciated but not required."
+  },
+  {
+    "file": "/tmp/meetmap-assets/dolomites.jpg",
+    "photographer": "Hikerwise.com",
+    "source": "https://unsplash.com/photos/a-man-hiking-up-a-trail-in-the-mountains-l3fkqYm1_5E",
+    "download": "https://images.unsplash.com/photo-1707572387604-9beccf2c1977?fm=jpg&fit=crop&w=1200&h=800&q=85",
+    "width": 1200,
+    "height": 800,
+    "format": "JPEG",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "licenseSummary": "Free for commercial and noncommercial use; attribution appreciated but not required."
+  },
+  {
+    "file": "/tmp/meetmap-assets/cafe.jpg",
+    "photographer": "Gabriel Forsberg",
+    "source": "https://unsplash.com/photos/cooked-bread-on-plate-1h1dyDxL31g",
+    "download": "https://images.unsplash.com/photo-1563520506621-9c3a3587aea1?fm=jpg&fit=crop&w=1200&h=800&q=85",
+    "width": 1200,
+    "height": 800,
+    "format": "JPEG",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "licenseSummary": "Free for commercial and noncommercial use; attribution appreciated but not required."
+  }
+]

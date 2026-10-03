@@ -7,113 +7,260 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TagCode {
-  FAMILY
-  CLOSE_FRIEND
-  FRIEND
-  LOVE_INTEREST
-  RELATIONSHIP
-  ACQUAINTANCE
-  ENCOUNTER
-}
-
 model User {
-  id           String       @id @default(cuid())
-  email        String?      @unique
-  people       Person[]
-  diaryEntries DiaryEntry[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id             String          @id @default(cuid())
+  singleton      String          @unique @default("owner")
+  name           String
+  email          String          @unique
+  passwordHash   String
+  createdAt      DateTime        @default(now())
+  sessions       Session[]
+  settings       AppSettings?
+  people         Person[]
+  memories       Memory[]
+  places         Place[]
+  attachments    Attachment[]
+  savedViews     SavedView[]
+  auditLogs      AuditLog[]
+  holidayPeriods HolidayPeriod[]
+  trips          Trip[]
+  travelLegs     TravelLeg[]
+  anticipations  Anticipation[]
 }
 
-model Tag {
-  id        String      @id @default(cuid())
-  code      TagCode     @unique
-  label     String
-  color     String
-  people    PersonTag[]
+model Anticipation {
+  id        String   @id @default(cuid())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title     String
+  date      DateTime @db.Date
+  note      String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([ownerId, date])
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model AppSettings {
+  id                String    @id @default(cuid())
+  ownerId           String    @unique
+  owner             User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  birthday          DateTime? @db.Date
+  privacyRadius     Int       @default(0)
+  mapEnabled        Boolean   @default(false)
+  lastBackupAt      DateTime?
+  homePlaceId       String?
+  homePlace         Place?    @relation("HomePlace", fields: [homePlaceId], references: [id], onDelete: SetNull)
+  detectionMinDays  Int       @default(2)
+  detectionRadiusKm Float     @default(50)
 }
 
 model Person {
-  id            String             @id @default(cuid())
-  userId        String?
-  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id          String    @id @default(cuid())
+  ownerId     String
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name        String
+  aliases     String    @default("")
+  birthday    DateTime? @db.Date
+  tags        String[]  @default([])
+  importance  Int       @default(2)
+  favorite    Boolean   @default(false)
+  notes       String    @default("")
+  metAt       DateTime? @db.Date
+  endedAt     DateTime? @db.Date
+  online      Boolean   @default(false)
+  platform    String    @default("")
+  contextUrl  String    @default("")
+  contactDays Int       @default(30)
+  lastContact DateTime? @db.Date
+  avatarId    String?
+  placeId     String?
+  place       Place?    @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  memories    Memory[]
+  trips       Trip[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
+  @@index([ownerId, name])
+}
+
+model Memory {
+  id          String       @id @default(cuid())
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title       String
+  content     String       @default("")
+  startAt     DateTime     @db.Date
+  endAt       DateTime?    @db.Date
+  type        String       @default("Treffen")
+  mood        String       @default("Glücklich")
+  privacy     String       @default("Privat")
+  favorite    Boolean      @default(false)
+  pinned      Boolean      @default(false)
+  draft       Boolean      @default(false)
+  revision    Int          @default(0)
+  placeId     String?
+  place       Place?       @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  people      Person[]
+  attachments Attachment[]
+  tripId      String?
+  trip        Trip?        @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([ownerId, startAt])
+  @@index([ownerId, tripId])
+}
+
+model Place {
+  id            String        @id @default(cuid())
+  ownerId       String
+  owner         User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   name          String
-  age           Int?
-  is_online     Boolean            @default(false)
-  notes         String?
-  location_name String?
-  lat           Decimal?           @db.Decimal(9, 6)
-  lng           Decimal?           @db.Decimal(9, 6)
-  met_at        DateTime?
-  ended_at      DateTime?
-  platform      String?
-  context_url   String?
+  latitude      Float
+  longitude     Float
+  people        Person[]
+  memories      Memory[]
+  trips         Trip[]
+  homeSettings  AppSettings[] @relation("HomePlace")
+  departingLegs TravelLeg[]   @relation("LegFromPlace")
+  arrivingLegs  TravelLeg[]   @relation("LegToPlace")
 
-  diaryLinks    DiaryEntryPerson[]
-  tagLinks      PersonTag[]
-
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-
-  @@index([userId])
-  @@index([met_at])
-  @@index([lat, lng])
+  @@unique([ownerId, name, latitude, longitude])
 }
 
-model DiaryEntry {
-  id            String             @id @default(cuid())
-  userId        String?
-  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+model Attachment {
+  id            String    @id @default(cuid())
+  ownerId       String
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  memoryId      String?
+  memory        Memory?   @relation(fields: [memoryId], references: [id], onDelete: SetNull)
+  storageKey    String    @unique
+  name          String
+  mime          String
+  hash          String
+  size          Int
+  width         Int
+  height        Int
+  createdAt     DateTime  @default(now())
+  capturedAt    DateTime?
+  latitude      Float?
+  longitude     Float?
+  tripId        String?
+  trip          Trip?     @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  source        String    @default("upload")
+  sourceAssetId String?
+  sourcePeople  String[]  @default([])
 
-  headline      String?
-  content       String
-  start_at      DateTime?
-  end_at        DateTime?
-  location_name String?
-  lat           Decimal?           @db.Decimal(9, 6)
-  lng           Decimal?           @db.Decimal(9, 6)
-
-  attachments   DiaryAttachment[]
-  people        DiaryEntryPerson[]
-
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-
-  @@index([createdAt])
-  @@index([start_at])
+  @@unique([ownerId, source, sourceAssetId])
+  @@index([ownerId, memoryId])
+  @@index([ownerId, tripId])
+  @@index([ownerId, capturedAt])
 }
 
-model DiaryAttachment {
-  id        String      @id @default(cuid())
-  entryId   String
-  entry     DiaryEntry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  data      Bytes
-  mimeType  String
-  createdAt DateTime    @default(now())
+model HolidayPeriod {
+  id          String      @id @default(cuid())
+  ownerId     String
+  owner       User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name        String
+  description String      @default("")
+  startAt     DateTime    @db.Date
+  endAt       DateTime    @db.Date
+  color       String      @default("#6d8d81")
+  trips       Trip[]
+  travelLegs  TravelLeg[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  @@index([entryId, createdAt])
+  @@index([ownerId, startAt])
 }
 
-model PersonTag {
-  personId  String
-  tagId     String
-  person    Person @relation(fields: [personId], references: [id], onDelete: Cascade)
-  tag       Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+model Trip {
+  id              String         @id @default(cuid())
+  ownerId         String
+  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  title           String
+  description     String         @default("")
+  startAt         DateTime       @db.Date
+  endAt           DateTime       @db.Date
+  holidayPeriodId String?
+  holidayPeriod   HolidayPeriod? @relation(fields: [holidayPeriodId], references: [id], onDelete: SetNull)
+  placeId         String?
+  place           Place?         @relation(fields: [placeId], references: [id], onDelete: SetNull)
+  people          Person[]
+  memories        Memory[]
+  attachments     Attachment[]
+  travelLegs      TravelLeg[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([ownerId, startAt])
+  @@index([ownerId, holidayPeriodId])
+}
+
+model TravelLeg {
+  id              String         @id @default(cuid())
+  ownerId         String
+  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  tripId          String?
+  trip            Trip?          @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  holidayPeriodId String?
+  holidayPeriod   HolidayPeriod? @relation(fields: [holidayPeriodId], references: [id], onDelete: SetNull)
+  fromPlaceId     String
+  fromPlace       Place          @relation("LegFromPlace", fields: [fromPlaceId], references: [id], onDelete: Restrict)
+  toPlaceId       String
+  toPlace         Place          @relation("LegToPlace", fields: [toPlaceId], references: [id], onDelete: Restrict)
+  departureAt     DateTime       @db.Date
+  mode            String         @default("car")
+  distanceKm      Float
+  distanceSource  String         @default("airline")
+  notes           String         @default("")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([ownerId, departureAt])
+  @@index([ownerId, tripId])
+  @@index([ownerId, holidayPeriodId])
+}
+
+model SavedView {
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name    String
+  query   String
+
+  @@unique([ownerId, name])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  action    String
+  entityId  String?
   createdAt DateTime @default(now())
 
-  @@id([personId, tagId])
-  @@index([tagId])
+  @@index([ownerId, createdAt])
 }
 
-model DiaryEntryPerson {
-  diaryEntryId String
-  personId     String
-  entry        DiaryEntry @relation(fields: [diaryEntryId], references: [id], onDelete: Cascade)
-  person       Person     @relation(fields: [personId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now())
+model GeocodeCache {
+  query     String   @id
+  results   Json
+  expiresAt DateTime
+}
 
-  @@id([diaryEntryId, personId])
-  @@index([personId])
+model AuthAttempt {
+  key         String   @id
+  count       Int      @default(0)
+  windowStart DateTime @default(now())
 }

@@ -1,32 +1,54 @@
 {
-  "name": "meetmap-gpt5pro",
-  "version": "0.1.0",
+  "name": "meetmap",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "db:generate": "prisma generate",
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "prisma generate && node scripts/sync-map-assets.mjs && next build",
+    "start": "next start --hostname 0.0.0.0",
+    "postinstall": "prisma generate && node scripts/sync-map-assets.mjs",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "node prisma/seed.js",
-    "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
-    "prisma:studio": "prisma studio",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p 3000"
+    "db:generate": "prisma generate",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "test:serve": "node scripts/test-server.mjs",
+    "test:integration": "node tests/integration/api.mjs && node tests/integration/uploads.mjs",
+    "test:integration:travel": "node tests/integration/travel.mjs && node tests/integration/travel-photos.mjs && node tests/integration/anticipation.mjs"
   },
   "dependencies": {
-    "@prisma/client": "^5.16.1",
-    "maplibre-gl": "^4.7.1",
-    "next": "^14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "zod": "^3.23.8"
+    "@fontsource/dm-sans": "^5.2.8",
+    "@fontsource/lora": "^5.2.8",
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "6.19.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@tanstack/react-query": "^5.90.0",
+    "argon2": "^0.44.0",
+    "exifr": "^7.1.3",
+    "file-type": "^21.1.1",
+    "lucide-react": "^0.577.0",
+    "maplibre-gl": "6.9.0",
+    "next": "16.3.5",
+    "prisma": "6.19.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.62.0",
+    "sharp": "0.35.4",
+    "zod": "^4.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "@types/react": "19.1.12",
-    "prisma": "^5.16.1",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.4.5"
+    "@playwright/test": "^1.58.0",
+    "@tailwindcss/postcss": "^4.2.0",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "tailwindcss": "^4.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  },
+  "overrides": {
+    "effect": "^3.20.0",
+    "deepmerge-ts": "^8.0.0"
   }
 }

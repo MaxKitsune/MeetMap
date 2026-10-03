@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.env*
+work
+data
+test-results
+playwright-report
+
+backups/
+*.dump
+
+.next-test
+.next-prod-test
+
+.next-build

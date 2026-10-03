@@ -1,0 +1,47 @@
+.date-input-control {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+.date-input-control > .date-input-field {
+  width: 100%;
+  padding-right: 44px;
+  font-variant-numeric: tabular-nums;
+}
+.date-input-calendar-button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-muted, #757970);
+  cursor: pointer;
+}
+.date-input-calendar-button:hover:not(:disabled) {
+  background: var(--surface-muted, #f1f2ed);
+  color: var(--ink, #30382f);
+}
+.date-input-calendar-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.date-input-control > .date-input-native-picker {
+  position: absolute;
+  right: 16px;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}

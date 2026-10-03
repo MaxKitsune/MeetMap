@@ -1,23 +1,58 @@
-version: '3.9'
 services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://meetmap:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/meetmap
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      UPLOAD_DIR: /data/uploads
+      OLLAMA_URL: ${OLLAMA_DOCKER_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma3:4b}
+      GEOCODER_URL: ${GEOCODER_URL:-https://nominatim.openstreetmap.org}
+      IMMICH_URL: ${IMMICH_URL:-}
+      IMMICH_API_KEY: ${IMMICH_API_KEY:-}
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+  migrate:
+    build:
+      context: .
+      target: deps
+    command: ["npx", "prisma", "migrate", "deploy"]
+    environment:
+      DATABASE_URL: postgresql://meetmap:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/meetmap
+    depends_on:
+      db:
+        condition: service_healthy
   db:
-    image: postgres:16-alpine
-    container_name: meetmap-postgres
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: meetmap
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: meetmap
-    ports:
-      - "5432:5432"
     volumes:
-      - meetmap_pgdata:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U meetmap -d meetmap"]
       interval: 5s
       timeout: 5s
-      retries: 10
-
+      retries: 12
+  ollama:
+    image: ollama/ollama:latest
+    profiles: [ai]
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
 volumes:
-  meetmap_pgdata:
-
+  postgres:
+  uploads:
+  ollama:
