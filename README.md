@@ -186,9 +186,19 @@ npm test
 npm run build
 ```
 
-Mit `npm run test:serve` wird über die Entwicklungsverbindung eine getrennte Datenbank `meetmap_test` angelegt und eine isolierte Instanz auf Port 3001 gestartet. `npm run test:integration` prüft dort Zugriffsschutz, Änderungen, Uploads und EXIF-Entfernung. Verwende dafür eine Entwicklungs-Datenbankrolle mit CREATE-DATABASE-Recht.
+Mit `npm run test:serve` wird über eine lokale Entwicklungsverbindung eine getrennte Datenbank `meetmap_test` angelegt und eine isolierte Instanz auf `localhost:3001` gestartet. Erlaubt sind nur PostgreSQL-URLs mit Loopback-Host ohne Query-Parameter. Die Datenbank wird über die Wartungsdatenbank `postgres` angelegt; verwende dafür eine Entwicklungs-Datenbankrolle mit CREATE-DATABASE-Recht. In CI muss `meetmap_test` bereits existieren; dort wird keine lokale `.env` geladen. `npm run test:integration` prüft Zugriffsschutz, Änderungen, Uploads und EXIF-Entfernung. Anschließend führen `npm run test:integration:travel` die Reise-, Foto- und Vorfreude-Prüfungen und `TEST_BASE_URL=http://localhost:3001 npm run test:e2e` die Playwright-Prüfungen aus.
 
 Die API- und Upload-Integrationsskripte unter `tests/integration/` sind für die während der Entwicklung verwendete, getrennte Testinstanz auf `localhost:3001` ausgelegt und **nicht** gegen deine private Datenbank auszuführen. Sie verwenden eine ausdrücklich separate Testdatenbank und temporäre Zugangsdaten unter `work/`. `tests/e2e/security.spec.ts` enthält zusätzlich Playwright-Prüfungen für öffentliche Health-Endpunkte, Zugriffsschutz und Origin-Checks; `TEST_BASE_URL` konfiguriert deren Ziel.
+
+### Continuous Integration
+
+`.github/workflows/ci.yml` läuft bei Pull Requests nach `main`, Pushes auf `main` und manuell über **Actions → CI → Run workflow**. Feature-Branches werden über ihren Pull Request geprüft, um doppelte Push-/PR-Läufe zu vermeiden. Ein Job führt TypeScript und Vitest aus, ein zweiter alle Integrationsskripte und die bestehenden Chromium-Tests. Beide verwenden Node.js 22 und `npm ci`; der Postinstall-Schritt generiert den Prisma-Client bereits.
+
+Der Integrationsjob verwendet einen frischen PostgreSQL-17-Service mit der Datenbank `meetmap_test`, ausschließlich temporären Zugangsdaten und Uploads unter `work/test-uploads`. Er erhält keine Repository-Secrets, keine Produktionsumgebung und keine privaten Volumes. Immich bleibt unkonfiguriert; KI-, Geocoder- und Tile-URLs zeigen auf einen unbenutzten Loopback-Port. Die für den Vorfreude-Test erforderliche `.env` wird ausschließlich aus der Test-URL neu geschrieben. Das Testserver-Skript akzeptiert in CI nur eine lokale `meetmap_test`-URL und erzeugt ein zufälliges Owner-Passwort.
+
+`bash scripts/test-ci.sh` startet den Testserver genau einmal, wartet höchstens rund 180 Sekunden auf `/api/readyz` (Datenbank, Schema und Upload-Schreibzugriff) und führt API/Uploads, Reisen/Fotos/Vorfreude und Playwright nacheinander aus. Frühe Serverabbrüche und Migrationsfehler schlagen fehl. Die Suiten laufen nach einem Testfehler weiter, der Gesamtlauf bleibt fehlgeschlagen; nach Erfolg, Fehler oder Abbruch wird die Prozessgruppe beendet. Serverlog, Playwright-Bericht und Fehler-Traces werden sieben Tage als `test-diagnostics` aufbewahrt, ohne `.env`, Zugangsdaten, Cookies oder Upload-Verzeichnis zu archivieren.
+
+**Abdeckungsgrenzen:** Die fünf vorhandenen Playwright-Tests prüfen Zugriffsschutz, Origin-Regeln, Health und die Weiterleitung zur Anmeldung. Angemeldete Browserabläufe für Profile, Erinnerungen, Reisen, Galerie und interaktive Karten fehlen noch; die entsprechenden API- und Unit-Prüfungen ersetzen diese nicht. CI verwendet den Dev-Server und prüft weder Produktionsbuild/Container noch Live-Immich, Ollama oder Online-Kartendienste. Eine erfolgreiche CI verhindert einen Merge nur, wenn die beiden Jobs zusätzlich als verpflichtende Statusprüfungen in GitHub eingerichtet sind.
 
 ## Betrieb und Grenzen
 
